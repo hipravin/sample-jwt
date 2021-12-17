@@ -23,6 +23,17 @@ import java.io.IOException;
 public class SecurityConfig {
 
     @Configuration
+    @Order(SecurityProperties.BASIC_AUTH_ORDER - 90)
+    public static class PublicApiConfig extends WebSecurityConfigurerAdapter {
+
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http.antMatcher("/api/v1/public/**")
+                    .authorizeRequests().anyRequest().permitAll();
+        }
+    }
+
+    @Configuration
     @Order(SecurityProperties.BASIC_AUTH_ORDER - 100)
     public static class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -41,17 +52,4 @@ public class SecurityConfig {
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         }
     }
-
-    @Configuration
-    @Order(SecurityProperties.BASIC_AUTH_ORDER - 90)
-    public static class PublicApiConfig extends WebSecurityConfigurerAdapter {
-
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-            http.antMatcher("/api/v1/public/**")
-                    .authorizeRequests().anyRequest().permitAll();
-        }
-
-    }
-
 }
